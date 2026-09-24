@@ -1,23 +1,36 @@
 # AgentBench-Gemma Research Plan
 
 ## Target track
+
 Best New Resource — Google - The Gemma 4 Developer Agent Paper Track.
 
-## Research gap
+## Research direction (v0.2)
 
-Repository-level coding-agent evaluation is already well established through benchmarks such as SWE-bench. AgentBench-Gemma therefore does **not** claim novelty from simply being another coding benchmark. The proposed contribution is a controlled, trajectory-aware resource for isolating *agent workflow factors* while keeping the underlying model and task fixed.
+Our initial idea was a generic trajectory-aware coding benchmark. A literature check shows that trajectory capture and fine-grained coding-agent evaluation are already active areas: SWE-bench evaluates repository-level issue resolution; SWE-Explore isolates repository exploration; SWE-bench-Live uses rollout trajectories for verification; and recent work such as SWE-bench Science studies failure mechanisms and token efficiency. Therefore, AgentBench-Gemma will **not** claim novelty merely from recording trajectories or adding another pass/fail benchmark.
 
-The resource will study:
-- planning,
-- tool use,
-- test-driven self-repair,
-- context selection,
-- stopping behavior,
-- and efficiency.
+### Proposed contribution
 
-## Primary research question
+AgentBench-Gemma will be a **workflow-intervention and budget-aware evaluation resource for Gemma-based software-engineering agents**.
 
-How much do agent workflow components contribute to software-engineering task success and efficiency when the underlying Gemma model and task are held constant?
+The key unit of analysis is the *intervention*: a controlled change to one agent capability while holding the underlying model, task, tools, and budget as constant as practical.
+
+The resource asks:
+
+> Under a fixed Gemma model and software-engineering task, which agent workflow interventions improve reliability, and which merely increase interaction cost?
+
+This makes the deliverable a reusable experiment protocol rather than another leaderboard.
+
+## Research questions
+
+RQ1. What is the marginal effect of planning, testing, self-repair, context selection, and adaptive stopping?
+
+RQ2. Which interventions improve success under a fixed interaction/tool budget?
+
+RQ3. When does additional reasoning/tool use become wasteful or harmful?
+
+RQ4. Does trajectory-level efficiency explain differences that binary task success cannot?
+
+RQ5. Can a small, open model obtain better reliability through orchestration without changing model weights?
 
 ## Hypotheses
 
@@ -30,6 +43,8 @@ H3. More interaction is not uniformly beneficial; excessive iterations can incre
 H4. Binary success alone hides meaningful differences in agent behavior; trajectory-level metrics provide additional information.
 
 H5. Context selection can reduce execution cost while preserving task success.
+
+H6. Adaptive stopping can approach the reliability of a larger interaction budget while reducing unnecessary tool calls.
 
 ## Experimental matrix
 
@@ -45,37 +60,59 @@ Task -> plan -> inspect/edit/test -> patch
 D. Planning + self-repair
 Task -> plan -> implement -> test -> diagnose -> repair -> verify
 
-E. Adaptive
-Task -> model chooses among inspect/edit/test/stop under explicit budget constraints
+E. Planning + self-repair + adaptive stopping
+Same as D, but the agent explicitly decides whether another interaction is justified by the remaining budget and observed evidence.
 
-## Metrics
+## Core metrics
 
-Primary:
+### Reliability
 - task_success
 - regression_free
+- acceptance_test_pass_rate
 
-Secondary:
+### Interaction cost
+- tool_calls
 - iterations
 - test_executions
 - files_changed
 - patch_lines
 - wall_time_seconds
 - input_tokens / output_tokens when available
-- tool_calls
-- failed_test_count
+
+### Failure behavior
+- test_failure_recovery_rate
 - premature_stop
 - budget_exhaustion
+- repeated_action_rate
+- unnecessary_edit_rate
+
+### Experimental composite metric
+
+Agent Efficiency Score (AES) is currently implemented as an **experimental** metric. It rewards successful tasks while penalizing iterations and test executions. It must undergo sensitivity analysis before being presented as a validated metric.
+
+## Novelty boundary
+
+We explicitly distinguish this project from:
+- SWE-bench: repository-level task resolution.
+- SWE-bench-Live: automatically updated multi-language/multi-OS tasks with trajectory verification.
+- SWE-Explore: repository exploration and context-efficiency evaluation.
+- SWE-bench Science: domain-specific scientific software engineering and failure analysis.
+
+AgentBench-Gemma's intended contribution is the **controlled intervention protocol around agent workflow choices under explicit budgets**, packaged with reproducible configurations, trajectory/outcome schemas, and analysis code.
+
+If further literature review reveals an existing resource with essentially the same protocol, we will pivot rather than overclaim novelty.
 
 ## Resource deliverables
 
 1. Versioned task specification format.
 2. Observable trajectory schema.
-3. Reference evaluation implementation.
-4. Controlled experiment configuration.
+3. Workflow-intervention configuration schema.
+4. Reference evaluation implementation.
 5. Small permissively licensed benchmark fixtures.
-6. Reproducibility documentation.
-7. Analysis scripts and result schema.
-8. Research paper describing methodology and findings.
+6. Fixed-budget experiment runner.
+7. Analysis scripts for reliability/cost/frontier plots.
+8. Reproducibility documentation.
+9. Research paper describing methodology and measured findings.
 
 ## Integrity rules
 
