@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentBench-Gemma Task",
+  "type": "object",
+  "required": [
+    "task_id",
+    "repository",
+    "commit",
+    "language",
+    "task_type",
+    "instruction",
+    "test_command",
+    "license"
+  ],
+  "properties": {
+    "task_id": {"type": "string"},
+    "repository": {"type": "string"},
+    "commit": {"type": "string"},
+    "language": {"type": "string"},
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "bug_fix",
+        "feature",
+        "refactor",
+        "test_generation",
+        "dependency_api",
+        "documentation_code_consistency"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "instruction": {"type": "string"},
+    "test_command": {"type": "string"},
+    "license": {"type": "string"},
+    "expected_files": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
