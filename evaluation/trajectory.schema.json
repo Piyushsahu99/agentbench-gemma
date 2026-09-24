@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentBench-Gemma Observable Trajectory Event",
+  "type": "object",
+  "required": ["run_id", "step", "event_type", "timestamp"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "step": {"type": "integer", "minimum": 0},
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "model_request",
+        "repo_inspection",
+        "file_read",
+        "search",
+        "file_edit",
+        "test_execution",
+        "test_result",
+        "diagnosis",
+        "termination"
+      ]
+    },
+    "timestamp": {"type": "string"},
+    "tool": {"type": ["string", "null"]},
+    "command": {"type": ["string", "null"]},
+    "files_changed": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "success": {"type": ["boolean", "null"]},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": false
+}
