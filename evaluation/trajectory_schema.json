@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentBench-Gemma Observable Trajectory",
+  "type": "object",
+  "required": ["trajectory_id", "task_id", "agent_config", "steps", "outcome"],
+  "properties": {
+    "trajectory_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "agent_config": {"type": "string"},
+    "model": {"type": "string"},
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "action_type"],
+        "properties": {
+          "step": {"type": "integer", "minimum": 0},
+          "action_type": {
+            "type": "string",
+            "enum": ["inspect", "edit", "test", "search", "execute", "stop"]
+          },
+          "command": {"type": "string"},
+          "target_files": {"type": "array", "items": {"type": "string"}},
+          "result_summary": {"type": "string"},
+          "exit_code": {"type": ["integer", "null"]},
+          "duration_seconds": {"type": ["number", "null"]}
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["task_success"],
+      "properties": {
+        "task_success": {"type": "boolean"},
+        "regression_free": {"type": ["boolean", "null"]},
+        "iterations": {"type": "integer", "minimum": 0},
+        "test_executions": {"type": "integer", "minimum": 0},
+        "tool_calls": {"type": "integer", "minimum": 0},
+        "files_changed": {"type": "integer", "minimum": 0},
+        "patch_lines": {"type": "integer", "minimum": 0},
+        "wall_time_seconds": {"type": ["number", "null"]},
+        "input_tokens": {"type": ["integer", "null"]},
+        "output_tokens": {"type": ["integer", "null"]},
+        "budget_exhaustion": {"type": "boolean"}
+      }
+    }
+  }
+}
